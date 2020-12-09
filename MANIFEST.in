@@ -1,0 +1,2 @@
+recursive-include src *.py
+recursive-exclude src *.c
