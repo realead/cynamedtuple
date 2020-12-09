@@ -1,4 +1,5 @@
 import cython
+import itertools
 
 
 _TAB = "    "
@@ -23,7 +24,7 @@ def _create_init_body(names):
 def _ensure_as_pairs(name_types):
     if isinstance(name_types, dict):
         name_types = name_types.items()
-    return name_types
+    return list(name_types)
 
 
 def _create_cdef_class_code(classname, name_ctype_pairs):
@@ -36,9 +37,8 @@ def _create_cdef_class_code(classname, name_ctype_pairs):
     return "\n".join(code_lines)+"\n"
 
 
-def _create_cnamedtuple_class(classname, names):
-    code = _create_cdef_class_code(classname, names)
-    code = code + "GenericClass = " + classname +"\n"
+def _create_cnamedtuple_class(classname, code):
+    code = code + "\nGenericClass = " + classname +"\n"
     ret = cython.inline(code)
     return ret["GenericClass"]
 
@@ -58,4 +58,21 @@ def typed_namedtuple(class_name, fieldnames_with_types):
             names_with_types can be either an iterable of name-type pairs
                              or a dict
     """
-    return _create_cnamedtuple_class(class_name, fieldnames_with_types)
+    code = typed_namedtuple_cycode(class_name, fieldnames_with_types)
+    return _create_cnamedtuple_class(class_name, code)
+
+
+def untyped_namedtuple_cycode(class_name, fieldnames):
+    """
+    returns cython code which would be used to create the cdef-class
+    """
+    fieldnames_with_types = zip(fieldnames, itertools.repeat("object"))
+    return typed_namedtuple_cycode(class_name, fieldnames_with_types)
+
+
+def untyped_namedtuple(class_name, fieldnames):
+    """
+    creates an untyped named tuple with given class name and fields
+    """
+    code = untyped_namedtuple_cycode(class_name, fieldnames)
+    return _create_cnamedtuple_class(class_name, code)
