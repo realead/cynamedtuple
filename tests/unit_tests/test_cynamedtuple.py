@@ -47,6 +47,32 @@ class CynamedtupleTester(unittest.TestCase):
             a[-4]
         self.assertEqual("tuple index out of range", context.exception.args[0])
 
+    def test_typed_namedtuple_all_defaults(self):
+        A = typed_namedtuple("A", (("a", "int"), ("b", "int"), ("c", "int")), defaults=[1,2,3])
+        a = A()
+        self.assertEqual(a.a, 1)
+        self.assertEqual(a.b, 2)
+        self.assertEqual(a.c, 3)
+
+    def test_typed_namedtuple_last_defaults(self):
+        A = typed_namedtuple("A", (("a", "int"), ("b", "int"), ("c", "int")), defaults=[2,3])
+        a = A(5)
+        self.assertEqual(a.a, 5)
+        self.assertEqual(a.b, 2)
+        self.assertEqual(a.c, 3)
+
+    def test_typed_namedtuple_last_defaults_overwritten(self):
+        A = typed_namedtuple("A", (("a", "int"), ("b", "int"), ("c", "int")), defaults=[2,3])
+        a = A(5,44)
+        self.assertEqual(a.a, 5)
+        self.assertEqual(a.b, 44)
+        self.assertEqual(a.c, 3)
+
+    def test_typed_namedtuple_too_many_defaults(self):
+        with self.assertRaises(TypeError) as context:
+            typed_namedtuple("A", (("a", "int"), ("b", "int"), ("c", "int")), defaults=[1,0,2,3])
+        self.assertEqual("Got more default values than field names", context.exception.args[0])
+
     def test_untyped_namedtuple_cycode(self):
         cycode = untyped_namedtuple_cycode("BBB", ("a", "b"))
         self.assertTrue("cdef class BBB:" in cycode, msg=cycode)
@@ -78,3 +104,29 @@ class CynamedtupleTester(unittest.TestCase):
         with self.assertRaises(IndexError) as context:
             a[-4]
         self.assertEqual("tuple index out of range", context.exception.args[0])
+
+    def test_untyped_namedtuple_all_defaults(self):
+        A = untyped_namedtuple("A", ("a", "b", "c"), defaults=[1,2,3])
+        a = A()
+        self.assertEqual(a.a, 1)
+        self.assertEqual(a.b, 2)
+        self.assertEqual(a.c, 3)
+
+    def test_untyped_namedtuple_last_defaults(self):
+        A = untyped_namedtuple("A", ("a", "b", "c"), defaults=[2,3])
+        a = A(5)
+        self.assertEqual(a.a, 5)
+        self.assertEqual(a.b, 2)
+        self.assertEqual(a.c, 3)
+
+    def test_untyped_namedtuple_last_defaults_overwritten(self):
+        A = untyped_namedtuple("A", ("a", "b", "c"), defaults=[2,3])
+        a = A(5,"44")
+        self.assertEqual(a.a, 5)
+        self.assertEqual(a.b, "44")
+        self.assertEqual(a.c, 3)
+
+    def test_untyped_namedtuple_too_many_defaults(self):
+        with self.assertRaises(TypeError) as context:
+            untyped_namedtuple("A", ("a", "b", "c"), defaults=[1,0,2,3])
+        self.assertEqual("Got more default values than field names", context.exception.args[0])
