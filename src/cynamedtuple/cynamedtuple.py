@@ -63,9 +63,12 @@ def _create_cnamedtuple_class(classname, code, cython_options):
 
 def typed_namedtuple_cycode(class_name, fieldnames_with_types, *, defaults=[], cython_header=[]):
     """
-    returns cython code which would be used to create the cdef-class
-            names_with_types can be either an iterable of name-type pairs
-                             or a dict
+    returns cython code which would be used to create Cython's cdef-class
+            fieldnames_with_types can be either an iterable of name-type pairs
+                                  or a dict
+            defaults      - default values for fields
+            cython_header - cimports, cdeftypes and similar Cython definitons,
+                            which should be imported before cdef-class definition
     """
     return _create_cdef_class_code(class_name, fieldnames_with_types, defaults, cython_header)
 
@@ -73,8 +76,20 @@ def typed_namedtuple_cycode(class_name, fieldnames_with_types, *, defaults=[], c
 def typed_namedtuple(class_name, fieldnames_with_types, *, defaults=[], cython_options = {'quiet':True}):
     """
     creates a typed named tuple with given class name and fields
-            names_with_types can be either an iterable of name-type pairs
-                             or a dict
+            fieldnames_with_types can be either an iterable of name-type pairs
+                                  or a dict
+            defaults      - default values for fields
+            cython_options - options for cython-build
+
+    Usage:
+
+    >>> MyStruct = typed_namedtuple("MyStruct", dict(a="int", b="int", c="int"), defaults=[2,3])
+    >>> s = MyStruct(5)
+    >>> s.a, s.b, s.c
+    (5, 2, 3)
+    >>> s[0], s[1], s[-1]
+    (5, 2, 3)
+
     """
     code = typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults)
     return _create_cnamedtuple_class(class_name, code, cython_options)
@@ -82,7 +97,9 @@ def typed_namedtuple(class_name, fieldnames_with_types, *, defaults=[], cython_o
 
 def untyped_namedtuple_cycode(class_name, fieldnames, *, defaults=[]):
     """
-    returns cython code which would be used to create the cdef-class
+    returns cython code which would be used to create Cython's cdef-class
+            fieldnames    - names of fields
+            defaults      - default values for fields
     """
     fieldnames_with_types = zip(fieldnames, itertools.repeat("object"))
     return typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults)
@@ -90,7 +107,20 @@ def untyped_namedtuple_cycode(class_name, fieldnames, *, defaults=[]):
 
 def untyped_namedtuple(class_name, fieldnames, *, defaults=[], cython_options = {'quiet':True}):
     """
-    creates an untyped named tuple with given class name and fields
+    creates a typed named tuple with given class name and fields
+            fieldnames_with_types can be either an iterable of name-type pairs
+                                  or a dict
+            defaults      - default values for field names
+            cython_options - options for cython-build
+    Usage:
+
+    >>> MyStruct = untyped_namedtuple("MyStruct", ["a", "b", "c"], defaults=[2,3])
+    >>> s = MyStruct(5)
+    >>> s.a, s.b, s.c
+    (5, 2, 3)
+    >>> s[0], s[1], s[-1]
+    (5, 2, 3)
+
     """
     code = untyped_namedtuple_cycode(class_name, fieldnames, defaults=defaults)
     return _create_cnamedtuple_class(class_name, code, cython_options)

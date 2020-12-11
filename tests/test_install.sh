@@ -36,6 +36,7 @@ pip freeze
 
 #tests:
 sh run_unit_tests.sh
+sh run_doctests.sh
 
 #clean or keep the environment
 if [ "$2" = "keep" ]; then
