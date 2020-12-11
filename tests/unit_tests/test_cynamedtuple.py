@@ -73,6 +73,14 @@ class CynamedtupleTester(unittest.TestCase):
             typed_namedtuple("A", (("a", "int"), ("b", "int"), ("c", "int")), defaults=[1,0,2,3])
         self.assertEqual("Got more default values than field names", context.exception.args[0])
 
+    def test_typed_namedtuple_cython_header(self):
+        cycode = typed_namedtuple_cycode("A", (("a", "myint"),), cython_header = ["ctypedef int myint"])
+        header = cycode.find("ctypedef int myint\n")
+        classdef = cycode.find("cdef class A:\n")
+        self.assertTrue(header>=0)
+        self.assertTrue(classdef>=0)
+        self.assertTrue(header<classdef)
+
     def test_untyped_namedtuple_cycode(self):
         cycode = untyped_namedtuple_cycode("BBB", ("a", "b"))
         self.assertTrue("cdef class BBB:" in cycode, msg=cycode)

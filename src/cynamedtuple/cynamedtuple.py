@@ -42,10 +42,12 @@ def _ensure_as_pairs(name_types):
     return list(name_types)
 
 
-def _create_cdef_class_code(classname, name_ctype_pairs, defaults):
+def _create_cdef_class_code(classname, name_ctype_pairs, defaults, cython_header):
     name_ctype_pairs = _ensure_as_pairs(name_ctype_pairs)
     names = [x[0] for x in name_ctype_pairs]
-    code_lines = ["cdef class " + classname + ":"]
+    code_lines = []
+    code_lines.extend(cython_header)
+    code_lines.append("cdef class " + classname + ":")
     code_lines.extend(_create_members_definition(name_ctype_pairs))
     code_lines.append(_create_init_signature(names, defaults))
     code_lines.extend(_create_init_body(names))
@@ -59,13 +61,13 @@ def _create_cnamedtuple_class(classname, code):
     return ret["GenericClass"]
 
 
-def typed_namedtuple_cycode(class_name, fieldnames_with_types, *, defaults=[]):
+def typed_namedtuple_cycode(class_name, fieldnames_with_types, *, defaults=[], cython_header=[]):
     """
     returns cython code which would be used to create the cdef-class
             names_with_types can be either an iterable of name-type pairs
                              or a dict
     """
-    return _create_cdef_class_code(class_name, fieldnames_with_types, defaults)
+    return _create_cdef_class_code(class_name, fieldnames_with_types, defaults, cython_header)
 
 
 def typed_namedtuple(class_name, fieldnames_with_types, *, defaults=[]):
@@ -74,7 +76,7 @@ def typed_namedtuple(class_name, fieldnames_with_types, *, defaults=[]):
             names_with_types can be either an iterable of name-type pairs
                              or a dict
     """
-    code = typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults)
+    code = typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults,)
     return _create_cnamedtuple_class(class_name, code)
 
 
