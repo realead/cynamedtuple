@@ -2,7 +2,19 @@
 
 Memory efficient and fast namedtuple implementation using cython.
 
-Inspired by Python's `namedtuple`, it is quite similar but not a drop-in replacement.
+## Installation
+
+To install current version use:
+
+    pip install https://github.com/realead/cynamedtuple/zipball/master
+
+It is possible to uninstall it afterwards via
+
+    pip uninstall cynamedtuple
+
+
+The necessary `cython`-module will be installed as well, if not already in the installation.
+
 
 ## Usage
 
@@ -16,9 +28,9 @@ When providing the types of fields, the resulting tuple is not only named but al
 
 For Python versions with non-ordered `dict`s, version with name-type-pairs iterable can be used:
 
-   ...
-   typed_namedtuple("MyStruct", [("a","int"), ("b","int"), ("c","int")])
-   ...
+    ...
+    typed_namedtuple("MyStruct", [("a","int"), ("b","int"), ("c","int")])
+    ...
 
 
 When the fields cannot be statically typed, `untyped_namedtuple` can be used, which uses slightly less memory and is somewhat faster than Python's original `namedtuple`:
@@ -111,6 +123,7 @@ There is also `untyped_namedtuple_cycode`-function as well.
 ## Trivia:
 
   * This project was inspired by the following SO-question: https://stackoverflow.com/q/65159938/5769463.
+  * While Python's `namedtuple` was an inspiration, `cynamedtuple`isn't a simple drop-in replacement.
   * While cnamedtuple (https://pypi.org/project/cnamedtuple/) is all about speed, `cynamedtuple` is more about smaller memory footprint.
 
 
