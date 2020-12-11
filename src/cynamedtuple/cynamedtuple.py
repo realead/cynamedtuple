@@ -55,9 +55,9 @@ def _create_cdef_class_code(classname, name_ctype_pairs, defaults, cython_header
     return "\n".join(code_lines)+"\n"
 
 
-def _create_cnamedtuple_class(classname, code):
+def _create_cnamedtuple_class(classname, code, cython_options):
     code = code + "\nGenericClass = " + classname +"\n"
-    ret = cython.inline(code)
+    ret = cython.inline(code, **cython_options)
     return ret["GenericClass"]
 
 
@@ -70,14 +70,14 @@ def typed_namedtuple_cycode(class_name, fieldnames_with_types, *, defaults=[], c
     return _create_cdef_class_code(class_name, fieldnames_with_types, defaults, cython_header)
 
 
-def typed_namedtuple(class_name, fieldnames_with_types, *, defaults=[]):
+def typed_namedtuple(class_name, fieldnames_with_types, *, defaults=[], cython_options = {'quiet':True}):
     """
     creates a typed named tuple with given class name and fields
             names_with_types can be either an iterable of name-type pairs
                              or a dict
     """
-    code = typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults,)
-    return _create_cnamedtuple_class(class_name, code)
+    code = typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults)
+    return _create_cnamedtuple_class(class_name, code, cython_options)
 
 
 def untyped_namedtuple_cycode(class_name, fieldnames, *, defaults=[]):
@@ -88,9 +88,9 @@ def untyped_namedtuple_cycode(class_name, fieldnames, *, defaults=[]):
     return typed_namedtuple_cycode(class_name, fieldnames_with_types, defaults=defaults)
 
 
-def untyped_namedtuple(class_name, fieldnames, *, defaults=[]):
+def untyped_namedtuple(class_name, fieldnames, *, defaults=[], cython_options = {'quiet':True}):
     """
     creates an untyped named tuple with given class name and fields
     """
     code = untyped_namedtuple_cycode(class_name, fieldnames, defaults=defaults)
-    return _create_cnamedtuple_class(class_name, code)
+    return _create_cnamedtuple_class(class_name, code, cython_options)
