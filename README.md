@@ -4,7 +4,7 @@ Memory efficient and fast `namedtuple` implementation using `Cython`.
 
 ## Installation
 
-To install last realeased version:
+To install last released version:
 
     pip install cynamedtuple
 
@@ -13,11 +13,6 @@ As `cynamedtuple` uses `Cython` under the hood, right C-compler/tool-chain is ne
 To install the most current version use:
 
     pip install https://github.com/realead/cynamedtuple/zipball/master
-
-It is possible to uninstall it afterwards via
-
-    pip uninstall cynamedtuple
-
 
 The necessary `Cython`-module will be installed as well, if not already in the installation.
 
@@ -32,7 +27,7 @@ When providing the types of fields, the resulting tuple is not only named but al
     print(s.a, s.b, s.c)      # results in 5 2 3
     print(s[0], s[1], s[-1])  # results in 5 2 3
 
-For Python versions with non-ordered `dict`s, version with name-type-pairs iterable can be used:
+For Python versions with non-ordered `dict`s (i.e. prior to Py3.6), version with name-type-pairs iterable can be used:
 
     ...
     typed_namedtuple("MyStruct", [("a","int"), ("b","int"), ("c","int")])
@@ -80,7 +75,7 @@ For creation of `1e6` elements, typed cynamedtuple is almost as fast as usual tu
 |------------|--------------------|
 |typed(T)    |       128 ms       |
 |untyped(U)  |       171 ms       |
-|Python's (P)|       504 ms       |
+|Python's(P) |       504 ms       |
 |tuple       |       118 ms       |
 
 
