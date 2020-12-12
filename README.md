@@ -1,10 +1,16 @@
 # cynamedtuple
 
-Memory efficient and fast namedtuple implementation using cython.
+Memory efficient and fast `namedtuple` implementation using `Cython`.
 
 ## Installation
 
-To install current version use:
+To install last realeased version:
+
+    pip install cynamedtuple
+
+As `cynamedtuple` uses `Cython` under the hood, right C-compler/tool-chain is needed in order to be able to create `cynamedtuple`s.
+
+To install the most current version use:
 
     pip install https://github.com/realead/cynamedtuple/zipball/master
 
@@ -13,7 +19,7 @@ It is possible to uninstall it afterwards via
     pip uninstall cynamedtuple
 
 
-The necessary `cython`-module will be installed as well, if not already in the installation.
+The necessary `Cython`-module will be installed as well, if not already in the installation.
 
 
 ## Usage
@@ -80,14 +86,14 @@ For creation of `1e6` elements, typed cynamedtuple is almost as fast as usual tu
 
 #### Accessing fields
 
-For accessing a field, typed and untyped versions are about 30% faster than PYthon's `namedtuple` but slightly slower than the usual `tuple`:
+For accessing a field, typed and untyped versions are about 30% faster than Python's `namedtuple` but slightly slower than the usual `tuple`:
 
 | Class     |        Times       |
 |-----------|--------------------|
 |typed(T)   |       51.5 ns      |
 |untyped(U) |       45.5 ns      |
-|Python's(P)|       504 ms       |
-|tuple      |       118 ms       |
+|Python's(P)|       68.4 ns      |
+|tuple      |       49.9 ns      |
 
 
 #### Accessing via index
@@ -97,12 +103,12 @@ Warning: `cynamedtuple`s aren't optimized for access via index - it is linear in
 
 ## Producing pyx-code
 
-Under the hood cynamedtuple uses string code snippets from Cython (aka `cython.inline`), with that some constrains come into play:
+Under the hood cynamedtuple uses string code snippets from Cython (aka `cython.inline`), and with that some constrains come into play:
 
   * Cython doesn't not yet supporting any cimports/includes from string code snippets
-  * it is not possible to define any types via `ctypedef` e.g. `ctypedef int myint` and use them in cynamedtuple, thus the types of cynamedtuple are limited to the built-in types.
+  * it is not possible to define any types via `ctypedef` e.g. `ctypedef int myint` and use them in a `cynamedtuple`, thus the types of `cynamedtuple` are limited to the built-in types.
 
-A workaround is to use `untyped_namedtuple_cycode` and to build a cython module from returned code, use `cython_header`-argument to insert needed defintions, e.g.
+A workaround is to use `typed_namedtuple_cycode` to produce the Cython code and to build a cython module from it. Use `cython_header`-argument to insert needed definitions, e.g.
 
      typed_namedtuple_cycode("A", (("a", "myint"),), cython_header = ["ctypedef int myint"])
 
@@ -129,5 +135,5 @@ There is also `untyped_namedtuple_cycode`-function as well.
 
 ## History:
 
-   *  0.1.0: ??.??.2020:
+   *  0.1.0: 13.12.2020:
        * introducing basic functionality

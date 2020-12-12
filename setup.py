@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 kwargs = {
       'name':'cynamedtuple',
       'version':'0.1.0',
-      'description':'a project',
+      'description':'Memory efficient and fast namedtuple implementation using Cython',
       'long_description':long_description,
       'long_description_content_type':"text/markdown",
       'author':'Egor Dranischnikow',
